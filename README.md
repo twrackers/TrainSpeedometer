@@ -1,0 +1,5 @@
+# TrainSpeedometer #
+
+The *TrainSpeedometer* sketch runs on an Arduino-class microcontroller, using a pair of sensors (usually optical) to measure the scale speed of a passing model train.
+
+This version uses a pair of [VL6180X time-of-flight proximity sensors](https://www.st.com/en/imaging-and-photonics-solutions/vl6180x.html).  The sensors measure the time which pulses of laser light need to travel to the object being sensed, and then reflect back to the sensor.  From this the distance to the object is calculated and returned in millimeters.  These distance measures are not used directly, but allow the code to determine if the object (the train) is present in front of the sensor or not, and is within a preset range of accepted distances.  Using the range does allow the code to ignore trains passing within the sensor's field of view (FOV) but which are not within a preset range of distances, such as trains on tracks other than the one being monitored.  It can also be used to ignore fixed objects behind the track.
