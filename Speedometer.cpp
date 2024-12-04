@@ -198,7 +198,7 @@ bool Speedometer::update() {
       // sketch's loop() function.
       
       if (!m_updated) {
-        // Display has been updated, can ow begin wait for both sensors to
+        // Display has been updated, can now begin wait for both sensors to
         // clear to no-detect status.
 #if TRACE
         uint32_t now = millis();
