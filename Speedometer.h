@@ -8,6 +8,7 @@
 #include "RangeWindow.h"
 
 #define TRACE 0
+#define STREAMING 0
 
 class Speedometer : public StateMachine {
 
