@@ -1,8 +1,6 @@
 #include "Speedometer.h"
 
-// If TRACE is #define'd, it's in Speedometer.h
-
-#define STREAMING 0
+// If TRACE or STREAMING are #define'd, they're in Speedometer.h
 
 #if TRACE
 #if STREAMING
