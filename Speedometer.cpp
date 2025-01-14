@@ -2,8 +2,12 @@
 
 // If TRACE is #define'd, it's in Speedometer.h
 
+#define STREAMING 0
+
 #if TRACE
+#if STREAMING
 #include <Streaming.h>
+#endif
 #endif
 
 // I2C addresses of sensors
@@ -93,8 +97,18 @@ bool Speedometer::update() {
         m_detA = m_window->within((uint8_t) distA);
         m_detB = m_window->within((uint8_t) distB);
 #if TRACE
+#if STREAMING
         Serial << (int) m_detA * 100 << " " << (int) m_detB * 100 << " "
           << distA << " " << distB << endl;
+#else
+        Serial.print((int) m_detA * 100);
+        Serial.print(" ");
+        Serial.print((int) m_detB * 100);
+        Serial.print(" ");
+        Serial.print(distA);
+        Serial.print(" ");
+        Serial.println(distB);
+#endif
 #endif
       }
     }
@@ -111,7 +125,12 @@ bool Speedometer::update() {
       if (m_detA && m_detB) {
         // Spurious double-detect
 #if TRACE
+#if STREAMING
         Serial << millis() << " CLEARING 1" << endl;
+#else
+        Serial.print(millis());
+        Serial.println(" CLEARING 1");
+#endif
 #endif
         m_state = eClearing;
       } else if (m_detA && !m_detB) {
@@ -119,7 +138,12 @@ bool Speedometer::update() {
         // to "Sensed A".
         uint32_t now = millis();
 #if TRACE
+#if STREAMING
         Serial << now << " SENSA" << endl;
+#else
+        Serial.print(now);
+        Serial.println(" SENSA");
+#endif
 #endif
         m_sense_when = now;
         m_state = eSenseA;
@@ -128,7 +152,12 @@ bool Speedometer::update() {
         // to "Sensed B".
         uint32_t now = millis();
 #if TRACE
+#if STREAMING
         Serial << now << " SENSB" << endl;
+#else
+        Serial.print(now);
+        Serial.println(" SENSB");
+#endif
 #endif
         m_sense_when = now;
         m_state = eSenseB;
@@ -147,7 +176,15 @@ bool Speedometer::update() {
         m_speed = calcScaleSpeed(elapsed);
         m_updated = true;
 #if TRACE
+#if STREAMING
         Serial << now << " UPDATED 1 " << elapsed << " " << m_speed << endl;
+#else
+        Serial.print(now);
+        Serial.print(" UPDATED 1 ");
+        Serial.print(elapsed);
+        Serial.print(" ");
+        Serial.println(m_speed);
+#endif
 #endif
         // Now begin timeout period.
         m_sense_when = now;
@@ -157,7 +194,12 @@ bool Speedometer::update() {
         if (elapsed > TIMEOUT_2ND) {
           m_speed = 0.0;
 #if TRACE
+#if STREAMING
           Serial << now << " ACTIVE 1" << endl;
+#else
+          Serial.print(now);
+          Serial.println(" ACTIVE 1");
+#endif
 #endif
           m_state = eActive;
         }
@@ -176,7 +218,15 @@ bool Speedometer::update() {
         m_speed = calcScaleSpeed(elapsed);
         m_updated = true;
 #if TRACE
+#if STREAMING
         Serial << now << " UPDATED 2 " << elapsed << " " << m_speed << endl;
+#else
+        Serial.print(now);
+        Serial.print(" UPDATED 2 ");
+        Serial.print(elapsed);
+        Serial.print(" ");
+        Serial.println(m_speed);
+#endif
 #endif
         // Now begin timeout period.
         m_sense_when = now;
@@ -186,7 +236,12 @@ bool Speedometer::update() {
         if (elapsed > TIMEOUT_2ND) {
           m_speed = 0.0;
 #if TRACE
+#if STREAMING
           Serial << now << " ACTIVE 2" << endl;
+#else
+          Serial.print(now);
+          Serial.println(" ACTIVE 2");
+#endif
 #endif
           m_state = eActive;
         }
@@ -202,7 +257,16 @@ bool Speedometer::update() {
         // clear to no-detect status.
 #if TRACE
         uint32_t now = millis();
+#if STREAMING
         Serial << now << " " << m_detA << " " << m_detB << " ACTIVE 3" << endl;
+#else
+        Serial.print(now);
+        Serial.print(" ");
+        Serial.print(m_detA);
+        Serial.print(" ");
+        Serial.print(m_detB);
+        Serial.println(" ACTIVE 3");
+#endif
 #endif
 //        m_sense_when = now;
         m_state = eActive;
@@ -216,7 +280,16 @@ bool Speedometer::update() {
         // Sensors cleared, begin timeout period before restarting state machine.
         m_sense_when = millis();
 #if TRACE
+#if STREAMING
 //        Serial << m_sense_when << " " << m_detA << " " << m_detB << " CLEARING 4" << endl;
+#else
+//        Serial.print(m_sense_when);
+//        Serial.print(" ");
+//        Serial.print(m_detA);
+//        Serial.print(" ");
+//        Serial.print(m_detB);
+//        Serial.println(" CLEARING 4");
+#endif
 #endif
         m_state = eClearing;
       }
@@ -232,7 +305,12 @@ bool Speedometer::update() {
       } else if ((now - m_sense_when) > TIMEOUT_CLEAR) {
         // Timeout period completed, go back to initial state.
 #if TRACE
+#if STREAMING
         Serial << now << " CLEAR" << endl;
+#else
+        Serial.print(now);
+        Serial.println(" CLEAR");
+#endif
 #endif
         m_state = eClear;
       }
