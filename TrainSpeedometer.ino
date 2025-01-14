@@ -4,10 +4,12 @@
 
 #include "Speedometer.h"
 
-// If TRACE is #define'd, it's in Speedometer.h
+// If TRACE or STREAMING are #define'd, they're in Speedometer.h
 
 #if TRACE
+#if STREAMING
 #include <Streaming.h>
+#endif
 #endif
 
 // Define GPIO pins for mode settings.
@@ -59,7 +61,11 @@ void setup() {
   if (!display.begin(0x70, 0x71)) {
     // Display failed to init.
 #if TRACE
+#if STREAMING
     Serial << "display.begin() failed" << endl;
+#else
+    Serial.println("display.begin() failed");
+#endif
 #endif
   } else {
     // Display initialied, set to minimum brightness.
@@ -72,7 +78,11 @@ void setup() {
   if (!meter.begin()) {
     // Sensor(s) failed to init.  Display error message and halt.
 #if TRACE
+#if STREAMING
     Serial << "meter.begin() failed" << endl;
+#else
+    Serial.println("meter.begin() failed");
+#endif
 #endif
     display.print("SPD ERR");
     while (true) ;    // do not proceed
