@@ -13,12 +13,12 @@
 #define SENS_B 0x2B
 
 // GPIO pins of sensor-enable outputs (used to set I2C addresses of sensors)
-#define ENA_A 5
-#define ENA_B 4
+#define ENA_A 5   // brown
+#define ENA_B 4   // red
 
 // GPIO pins of sensor interrupt inputs
-#define INTR_A 3
-#define INTR_B 2
+#define INTR_A 3  // orange
+#define INTR_B 2  // yellow
 
 // (Pointers to) sensor objects
 Sensor* sensA;
@@ -70,6 +70,20 @@ Speedometer::Speedometer(E_Scale s) :
   sensB = new Sensor(SENS_B, ENA_B, INTR_B, &readyB);
   attachInterrupt(digitalPinToInterrupt(INTR_B), isr_B, RISING);
 
+}
+
+// Try to initialize both sensors.
+bool Speedometer::begin() {
+
+  bool okA = sensA->begin();
+  bool okB = sensB->begin();
+#if TRACE
+#if STREAMING
+  Serial << "Speedometer::begin(): okA=" << okA << ", okB=" << okB << endl;
+#endif
+#endif  
+  return okA && okB;
+  
 }
 
 bool Speedometer::update() {
@@ -324,16 +338,6 @@ bool Speedometer::update() {
   
   // We get here if it wasn't time for StateMachine to update.
   return false;
-  
-}
-
-// Try to initialize both sensors.
-int Speedometer::begin() {
-  
-  if (sensA->begin() | sensB->begin()) {
-    return -1;
-  }
-  return 0;
   
 }
 

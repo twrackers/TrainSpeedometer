@@ -29,8 +29,8 @@ void Sensor::setupInterruptHandler(
 }
 
 // Initialize sensor and set options.
-// Returns 0 only if all steps succeed, -1 otherwise.
-int Sensor::begin() {
+// Returns true only if all steps succeed, false otherwise.
+bool Sensor::begin() {
     
     m_sensor->begin();
     m_sensor->VL6180x_On();
@@ -39,52 +39,52 @@ int Sensor::begin() {
 #if TRACE
         Serial.println("ERROR: InitSensor");
 #endif
-        return -1;
+        return false;
     }
     if (m_sensor->Present() != 1) {
 #if TRACE
         Serial.println("ERROR: Present");
 #endif
-        return -1;
+        return false;
     }
     if (m_sensor->Prepare() != 0) {
 #if TRACE
         Serial.println("ERROR: Prepare");
 #endif
-        return -1;
+        return false;
     }
     if (m_sensor->SetupGPIO1(GPIOx_SELECT_GPIO_INTERRUPT_OUTPUT, GPIOx_SELECT_GPIO_INTERRUPT_OUTPUT) != 0) {
 #if TRACE
         Serial.println("ERROR: SetupGPIO1");
 #endif
-        return -1;
+        return false;
     }
     if (m_sensor->RangeConfigInterrupt(CONFIG_GPIO_INTERRUPT_NEW_SAMPLE_READY) != 0) {
 #if TRACE
         Serial.println("ERROR: RangeConfigInterrupt");
 #endif
-        return -1;
+        return false;
     }
     if (m_sensor->RangeSetMaxConvergenceTime(8) != 0) {
 #if TRACE
         Serial.println("ERROR: RangeSetMaxConvergenceTime");
 #endif
-        return -1;
+        return false;
     }
     if (m_sensor->FilterSetState(0) != 0) {
 #if TRACE
         Serial.println("ERROR: FilterSetState");
 #endif
-        return -1;
+        return false;
     }
     if (m_sensor->DMaxSetState(0) != 0) {
 #if TRACE
         Serial.println("ERROR: DMaxSetState");
 #endif
-        return -1;
+        return false;
     }
     
-    return 0;
+    return true;
     
 }
 

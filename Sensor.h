@@ -28,7 +28,7 @@ class Sensor {
     void setupInterruptHandler(
       const uint8_t irq_pin, void (*irq_func)(), const int value
     );
-    int begin();
+    bool begin();
     int trigger();
     bool is_ready() const;
     uint32_t get_distance();

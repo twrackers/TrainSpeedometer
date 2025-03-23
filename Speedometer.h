@@ -48,7 +48,7 @@ class Speedometer : public StateMachine {
   public:
     Speedometer(E_Scale s = eJP);
     virtual bool update();
-    int begin();
+    bool begin();
     void setScale(E_Scale s);
     void setMetric(bool m);
     void setWindow(RangeWindow<uint8_t>* win);
