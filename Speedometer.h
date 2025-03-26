@@ -45,6 +45,8 @@ class Speedometer : public StateMachine {
     bool m_triggered;   // sensor emitters triggered
     bool m_updated;     // speed measure updated
 
+    uint32_t timeout_msec() const;
+
   public:
     Speedometer(E_Scale s = eJP);
     virtual bool update();

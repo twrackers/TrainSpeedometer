@@ -10,7 +10,7 @@ Sensor::Sensor(
     const bool* ready_flag
 ) : 
     m_sensor(new VL6180X(&Wire, ena_pin)),
-    m_filter(new Filter<uint32_t>(5)),
+    m_filter(new Filter<uint32_t>(10)),
     m_ready(ready_flag),
     m_addr(addr),
     m_gpio0(ena_pin),

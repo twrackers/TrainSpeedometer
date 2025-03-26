@@ -27,8 +27,7 @@ Sensor* sensB;
 // Conversion factor
 #define MI_PER_KM (0.62137119224)
 
-// Timeouts (msec)
-#define TIMEOUT_2ND 45455
+// Timeout (msec)
 #define TIMEOUT_CLEAR 1500
 
 // Flags set when interrupts occur
@@ -43,10 +42,23 @@ void isr_B() {
   readyB = true;
 }
 
+// Private method
+uint32_t Speedometer::timeout_msec() const {
+
+  double scale_min_speed = 1.0;   // limited by display
+  double scale_min_km_per_hr = scale_min_speed * (m_metric ? 1.0 : (1.0 / MI_PER_KM));
+  double scale_m_per_sec = scale_min_km_per_hr / 3.6;
+  double m_per_sec = scale_m_per_sec / (double) m_scale;
+  double mm_per_msec = m_per_sec;
+  double timeout_msec = m_spacing / mm_per_msec;
+  return (uint32_t) timeout_msec;
+  
+}
+
 // Constructor
 Speedometer::Speedometer(E_Scale s) : 
   StateMachine(5, true),    // 5 msec real-time period
-  m_spacing(127),           // sensor spaing (mm)
+  m_spacing(127),           // sensor spacing (mm, equal to 5.0 inches)
   m_sense_when(0L),         // time mark at beginning of interval measurement
   m_speed(0.0),             // most recent speed (km/hr or mi/hr)
   m_scale(s),               // scale factor (87, 150, 160, ...)
@@ -203,7 +215,7 @@ bool Speedometer::update() {
         m_state = eUpdated;
       } else {
         // ... otherwise, clear measuring of interval if we've waited too long.
-        if (elapsed > TIMEOUT_2ND) {
+        if (elapsed > timeout_msec()) {
           m_speed = 0.0;
 #if TRACE
 #if STREAMING
@@ -245,7 +257,7 @@ bool Speedometer::update() {
         m_state = eUpdated;
       } else {
         // ... otherwise, clear measuring of interval if we've waited too long.
-        if (elapsed > TIMEOUT_2ND) {
+        if (elapsed > timeout_msec()) {
           m_speed = 0.0;
 #if TRACE
 #if STREAMING

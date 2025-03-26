@@ -107,7 +107,7 @@ void loop() {
     meter.setMetric(digitalRead(METRIC_PIN) == HIGH);
     bool jp_scale = digitalRead(SCALE_PIN) == HIGH;
     meter.setScale(jp_scale ? Speedometer::eJP : Speedometer::eUS);
-    meter.setWindow(digitalRead(RANGE_PIN) == HIGH ? &range_win1 : &range_win2);
+    meter.setWindow(digitalRead(RANGE_PIN) == HIGH ? &range_win2 : &range_win1);
     
     // If measured speed has been updated...
     if (meter.isUpdated()) {
