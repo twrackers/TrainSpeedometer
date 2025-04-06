@@ -19,7 +19,7 @@ class Speedometer : public StateMachine {
     };
   
   private:
-    // Separation of sensors (mm)
+    // Separation of sensors (mm)jp_scale
     const int m_spacing;
     // Time of most recent first-detect (msec)
     uint32_t m_sense_when;

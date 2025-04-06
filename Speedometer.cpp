@@ -2,10 +2,8 @@
 
 // If TRACE or STREAMING are #define'd, they're in Speedometer.h
 
-#if TRACE
-#if STREAMING
+#if TRACE && STREAMING
 #include <Streaming.h>
-#endif
 #endif
 
 // I2C addresses of sensors
@@ -28,7 +26,7 @@ Sensor* sensB;
 #define MI_PER_KM (0.62137119224)
 
 // Timeout (msec)
-#define TIMEOUT_CLEAR 1500
+#define TIMEOUT_CLEAR 1000
 
 // Flags set when interrupts occur
 volatile bool readyA = false;
@@ -92,6 +90,11 @@ bool Speedometer::begin() {
 #if TRACE
 #if STREAMING
   Serial << "Speedometer::begin(): okA=" << okA << ", okB=" << okB << endl;
+#else
+  Serial.print("Speedometer::begin(): okA=");
+  Serial.print(okA);
+  Serial.print(", okB=");
+  Serial.println(okB);
 #endif
 #endif  
   return okA && okB;
@@ -122,12 +125,12 @@ bool Speedometer::update() {
         m_detB = m_window->within((uint8_t) distB);
 #if TRACE
 #if STREAMING
-        Serial << (int) m_detA * 100 << " " << (int) m_detB * 100 << " "
+        Serial << (int) m_detA << " " << (int) m_detB << " "
           << distA << " " << distB << endl;
 #else
-        Serial.print((int) m_detA * 100);
+        Serial.print((int) m_detA);
         Serial.print(" ");
-        Serial.print((int) m_detB * 100);
+        Serial.print((int) m_detB);
         Serial.print(" ");
         Serial.print(distA);
         Serial.print(" ");
@@ -305,14 +308,14 @@ bool Speedometer::update() {
         m_sense_when = millis();
 #if TRACE
 #if STREAMING
-//        Serial << m_sense_when << " " << m_detA << " " << m_detB << " CLEARING 4" << endl;
+        Serial << m_sense_when << " " << m_detA << " " << m_detB << " CLEARING 4" << endl;
 #else
-//        Serial.print(m_sense_when);
-//        Serial.print(" ");
-//        Serial.print(m_detA);
-//        Serial.print(" ");
-//        Serial.print(m_detB);
-//        Serial.println(" CLEARING 4");
+        Serial.print(m_sense_when);
+        Serial.print(" ");
+        Serial.print(m_detA);
+        Serial.print(" ");
+        Serial.print(m_detB);
+        Serial.println(" CLEARING 4");
 #endif
 #endif
         m_state = eClearing;

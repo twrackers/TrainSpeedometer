@@ -29,6 +29,7 @@ class RangeWindow {
       // Return true if between low and high ends, false otherwise.
       return lo && !hi;
     }
+    
 };
 
 #endif
